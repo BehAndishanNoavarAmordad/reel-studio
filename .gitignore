@@ -1,0 +1,13 @@
+.env
+.venv/
+node_modules/
+work/
+out/
+videos/*
+!videos/.gitkeep
+assets/fonts/
+assets/logos/
+STYLE.md
+specs/*
+!specs/example.json
+__pycache__/

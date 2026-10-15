@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="fa">
+<head>
+<meta charset="utf-8">
+<title>overlay</title>
+<style>
+  @font-face { font-family: Vaz; font-weight: 400; src: url(../assets/fonts/Vazirmatn-Regular.ttf); }
+  @font-face { font-family: Vaz; font-weight: 700; src: url(../assets/fonts/Vazirmatn-Bold.ttf); }
+  @font-face { font-family: Vaz; font-weight: 800; src: url(../assets/fonts/Vazirmatn-ExtraBold.ttf); }
+  @font-face { font-family: Vaz; font-weight: 900; src: url(../assets/fonts/Vazirmatn-Black.ttf); }
+  html, body { margin: 0; background: transparent; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: Vaz, sans-serif; }
+  .abs { position: absolute; left: 0; top: 0; width: 1080px; }
+  .hide { display: none; }
+
+  /* captions */
+  #cap { position: absolute; left: 70px; right: 70px; text-align: center; direction: rtl; }
+  #cap .w { display: inline-block; unicode-bidi: isolate; white-space: nowrap; margin: 0 0.1em; }
+  .cap-clean { font-weight: 700; font-size: 58px; line-height: 1.55; color: #fff;
+    text-shadow: 0 2px 3px rgba(0,0,0,.55), 0 4px 18px rgba(0,0,0,.45); }
+  .cap-bold { font-weight: 900; font-size: 84px; line-height: 1.35; color: #fff;
+    text-shadow: 0 0 2px #000, 3px 3px 0 #000, -3px 3px 0 #000, 3px -3px 0 #000, -3px -3px 0 #000,
+                 0 4px 0 #000, 0 -4px 0 #000, 4px 0 0 #000, -4px 0 0 #000, 0 10px 24px rgba(0,0,0,.5); }
+  .cap-story { font-weight: 800; font-size: 58px; line-height: 1.5; color: rgba(255,255,255,.55); }
+  .cap-story .box { display: inline-block; background: rgba(14,14,16,.66); border-radius: 22px; padding: 10px 30px 14px; }
+
+  /* cards */
+  .card { position: absolute; background: #fff; border-radius: 28px; box-shadow: 0 18px 44px rgba(0,0,0,.35);
+    display: flex; align-items: center; gap: 22px; padding: 22px 32px; transform-origin: 50% 50%; white-space: nowrap; }
+  .card .ic { width: 84px; height: 84px; display: flex; align-items: center; justify-content: center; }
+  .card .ic svg { width: 100%; height: 100%; }
+  .card .lb { font-weight: 900; font-size: 54px; color: #111; direction: rtl; }
+  .card .lb.lat { direction: ltr; }
+  .card .sub { font-weight: 800; font-size: 32px; color: #5b5f66; direction: rtl; }
+  .stamp { position: absolute; width: 120px; height: 120px; border-radius: 60px; display: flex; align-items: center;
+    justify-content: center; box-shadow: 0 8px 22px rgba(0,0,0,.35); }
+  .stamp svg { width: 70px; height: 70px; }
+
+  /* title */
+  .title { position: absolute; left: 60px; right: 60px; text-align: center; direction: rtl; }
+  .title .ln { display: inline-block; font-weight: 900; font-size: 76px; line-height: 1.25; color: #fff; padding: 6px 24px 14px;
+    text-shadow: 0 4px 18px rgba(0,0,0,.5); }
+  .title .ln.hl { color: #111; text-shadow: none; border-radius: 16px; }
+
+  /* kanban */
+  .kb { position: absolute; left: 40px; width: 1000px; background: #F4F5F7; border-radius: 30px; box-shadow: 0 24px 60px rgba(0,0,0,.45);
+    padding: 26px 22px 24px; box-sizing: border-box; direction: ltr; }
+  .kb .hd { display: flex; align-items: center; gap: 14px; margin: 0 6px 18px; }
+  .kb .hd svg { width: 44px; height: 44px; }
+  .kb .hd .t { font-weight: 900; font-size: 38px; color: #172B4D; }
+  .kb .hd .t2 { font-weight: 800; font-size: 30px; color: #5E6C84; margin-left: auto; direction: rtl; }
+  .kb .cols { position: relative; display: flex; gap: 14px; height: 330px; }
+  .kb .col { flex: 1; background: #EBECF0; border-radius: 16px; padding: 14px 10px; box-sizing: border-box; border: 3px solid transparent; }
+  .kb .col .ct { font-weight: 800; font-size: 25px; letter-spacing: .04em; color: #5E6C84; margin: 0 4px 12px; }
+  .kb .sk { background: #fff; border-radius: 10px; height: 104px; margin-bottom: 10px; box-shadow: 0 1px 2px rgba(9,30,66,.25); position: relative; }
+  .kb .sk::after { content: ''; position: absolute; left: 12px; right: 40px; top: 16px; height: 10px; border-radius: 5px; background: #DFE1E6; box-shadow: 0 20px 0 #EBECF0; }
+  .kb .kc { position: absolute; background: #fff; border-radius: 10px; box-shadow: 0 6px 16px rgba(9,30,66,.28); padding: 12px 14px;
+    box-sizing: border-box; direction: rtl; font-weight: 800; font-size: 30px; color: #172B4D; line-height: 1.3; }
+  .kb .kc .tag { display: inline-block; margin-top: 6px; font-size: 21px; font-weight: 800; color: #fff; border-radius: 6px; padding: 1px 8px; }
+
+  #flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+</style>
+</head>
+<body>
+<div id="stage"><div id="ovl"></div><div id="cap"></div><div id="flash"></div></div>
+<script>
+const TL = window.TIMELINE;
+const stage = document.getElementById('stage'), cap = document.getElementById('cap'), ovl = document.getElementById('ovl');
+window.STUDIO = { W: TL.W, H: TL.H };
+
+// closed-form spring, pure function of time (k stiffness, c damping, unit mass)
+function spring(t, k = 170, c = 26) {
+  if (t <= 0) return 0;
+  const w0 = Math.sqrt(k), z = c / (2 * w0);
+  if (z < 1) { const wd = w0 * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w0 * t) * (Math.cos(wd * t) + (z * w0 / wd) * Math.sin(wd * t)); }
+  return 1 - Math.exp(-w0 * t) * (1 + w0 * t);
+}
+const SNAPPY = [320, 30], SOFT = [170, 26], PLAY = [260, 18];
+const lerp = (a, b, p) => a + (b - a) * p;
+const clamp01 = (x) => Math.max(0, Math.min(1, x));
+
+const ICONS = {
+  wallet: '<rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 9.5h13.5a2 2 0 0 1 2 2V19"/><circle cx="16" cy="13.8" r="1.2" fill="currentColor"/><path d="M6 6l9-3 1.5 3"/>',
+  button: '<rect x="2.5" y="5" width="15" height="8" rx="3"/><path d="M12.5 12.5l7.5 3-3.2 1.2-1.3 3.3z" fill="currentColor"/>',
+  calendar: '<rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M7.5 14h3M13.5 14h3M7.5 17.5h3"/>',
+  notebook: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3v18M12 8h4M12 12h4M3.5 7h3M3.5 12h3M3.5 17h3"/>',
+  server: '<rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><circle cx="7" cy="7.5" r="1" fill="currentColor"/><circle cx="7" cy="16.5" r="1" fill="currentColor"/><path d="M11 7.5h6M11 16.5h6"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7"/>',
+  x: '<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',
+  team: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-5.6 6-5.6s6 2.3 6 5.6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.4c2.9.2 5 2.2 5 5.6"/>',
+  bolt: '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
+};
+const icon = (name, color, sw = 2) => `<svg viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" style="color:${color}">${ICONS[name]}</svg>`;
+
+// ---------- build overlay DOM once ----------
+const OV = TL.overlays.map((o) => {
+  const el = document.createElement('div');
+  el.className = 'abs hide';
+  const acc = o.accent || TL.caption.accent || '#FFD60A';
+  if (o.type === 'logo' || o.type === 'chip') {
+    const ic = o.svg ? o.svg : icon(o.icon || 'bolt', o.color || '#111', 2.2);
+    el.innerHTML = `<div class="card" style="${o.dark ? 'background:#16171a' : ''}"><div class="ic">${ic}</div>
+      <div><div class="lb ${/^[\x00-\x7F]+$/.test(o.label) ? 'lat' : ''}" style="${o.dark ? 'color:#fff' : ''}">${o.label}</div>${o.sub ? `<div class="sub" style="${o.dark ? 'color:#C9CCD3' : ''}">${o.sub}</div>` : ''}</div></div>
+      ${o.x_t != null ? `<div class="stamp x" style="background:#E5484D">${icon('x', '#fff', 3.4)}</div>` : ''}
+      ${o.check_t != null ? `<div class="stamp ok" style="background:#30A46C">${icon('check', '#fff', 3.4)}</div>` : ''}`;
+  } else if (o.type === 'title') {
+    el.innerHTML = `<div class="title">${o.lines.map((l, i) => `<div><span class="ln ${l.hl ? 'hl' : ''}" style="${l.hl ? `background:${acc}` : ''}">${l.text}</span></div>`).join('')}</div>`;
+  } else if (o.type === 'kanban') {
+    const cols = o.columns.map((c) => `<div class="col"><div class="ct">${c}</div><div class="sk"></div><div class="sk" style="opacity:.6"></div></div>`).join('');
+    el.innerHTML = `<div class="kb"><div class="hd">${o.svg || ''}<div class="t">${o.board || 'Board'}</div><div class="t2">${o.board_sub || ''}</div></div>
+      <div class="cols">${cols}${o.cards.map((c) => `<div class="kc" style="width:${(1000 - 44 - 14 * 3) / 4 - 20}px">${c.text}${c.tag ? `<br><span class="tag" style="background:${c.tag_color || '#0052CC'}">${c.tag}</span>` : ''}</div>`).join('')}</div></div>`;
+  }
+  ovl.appendChild(el);
+  return { o, el, card: el.firstElementChild };
+});
+
+// ---------- captions ----------
+const CS = TL.caption, style = CS.style || 'clean';
+cap.className = 'cap-' + style;
+let curPhrase = -2;
+const kwColor = (w) => { for (const k in (CS.keywords || {})) if (w.includes(k)) return CS.keywords[k]; return null; };
+
+function drawCaptions(t, altY) {
+  const i = TL.phrases.findIndex((p) => t >= p.start && t < p.end);
+  if (i !== curPhrase) {
+    curPhrase = i;
+    if (i < 0) { cap.innerHTML = ''; }
+    else {
+      const ws = TL.phrases[i].words.map((w, j) => `<span class="w" data-j="${j}">${w.w}</span>`).join(' ');
+      cap.innerHTML = style === 'story' ? `<span class="box">${ws}</span>` : ws;
+    }
+  }
+  if (i < 0) return;
+  const ph = TL.phrases[i];
+  const y = (altY ?? CS.y ?? 0.66) * TL.H;
+  const e = spring(t - ph.start, ...SNAPPY);
+  cap.style.top = y + 'px';
+  cap.style.transform = `translateY(-50%)` + (style === 'bold' ? ` scale(${lerp(0.86, 1, e)})` : style === 'story' ? ` translateY(${lerp(26, 0, e)}px)` : '');
+  cap.querySelectorAll('.w').forEach((s) => {
+    const w = ph.words[+s.dataset.j];
+    const active = t >= w.start && t < (ph.words[+s.dataset.j + 1]?.start ?? ph.end);
+    const said = t >= w.start;
+    const kc = kwColor(w.w);
+    if (style === 'bold') {
+      const a = spring(t - w.start, ...SNAPPY);
+      s.style.color = active ? (kc || CS.accent) : (kc || '#fff');
+      s.style.transform = active ? `scale(${lerp(1, 1.1, a)})` : 'none';
+    } else if (style === 'story') {
+      s.style.color = active ? (kc || CS.accent) : said ? '#fff' : 'rgba(255,255,255,.5)';
+    } else {
+      s.style.color = kc || '#fff';
+    }
+  });
+}
+
+// ---------- overlays ----------
+function place(el, o, sx, sy, sc, rot = 0, op = 1) {
+  const w = el.firstElementChild.offsetWidth, h = el.firstElementChild.offsetHeight;
+  el.style.transform = `translate(${o.x * TL.W - w / 2 + sx}px, ${o.y * TL.H - h / 2 + sy}px)`;
+  el.firstElementChild.style.transform = `scale(${sc}) rotate(${rot}deg)`;
+  el.style.opacity = op;
+}
+
+function drawOverlay(t, it) {
+  const { o, el } = it;
+  if (t < o.t0 || t > o.t1 + 0.6) { el.classList.add('hide'); return false; }
+  el.classList.remove('hide');
+  const e = spring(t - o.t0, ...(o.type === 'kanban' ? SOFT : PLAY));
+  const x = spring(t - o.t1, ...SNAPPY);
+  const v = e * (1 - x);
+  if (o.type === 'logo' || o.type === 'chip') {
+    place(el, o, 0, lerp(60, 0, e) + lerp(0, -40, x), Math.max(0.001, lerp(0.35, 1, e) * lerp(1, 0.5, x)), lerp(-8, 0, e), clamp01(v * 3));
+    const xs = el.querySelector('.stamp.x'), ok = el.querySelector('.stamp.ok');
+    const card = el.firstElementChild;
+    for (const [st, tt] of [[xs, o.x_t], [ok, o.check_t]]) {
+      if (!st) continue;
+      const s = tt != null ? spring(t - tt, ...PLAY) : 0;
+      st.style.left = '-64px'; st.style.top = '-52px';
+      st.style.transform = `scale(${Math.max(0.001, s)}) rotate(${lerp(-30, 0, s)}deg)`;
+      st.style.opacity = s > 0.001 ? 1 : 0;
+    }
+    if (xs) card.style.filter = o.x_t != null && t >= o.x_t ? `grayscale(${clamp01((t - o.x_t) * 4)})` : 'none';
+  } else if (o.type === 'title') {
+    const lines = el.querySelectorAll('.ln');
+    el.style.transform = `translate(0, ${o.y * TL.H}px)`;
+    lines.forEach((ln, i) => {
+      const s = spring(t - o.t0 - i * 0.12, ...PLAY) * (1 - x);
+      ln.style.transform = `translateY(${lerp(50, 0, s)}px) scale(${Math.max(0.001, lerp(0.7, 1, s))})`;
+      ln.style.opacity = clamp01(s * 3);
+    });
+  } else if (o.type === 'kanban') {
+    const kb = el.firstElementChild;
+    kb.style.top = (o.y * TL.H) + 'px';
+    kb.style.transform = `translateY(${lerp(160, 0, e) + lerp(0, 220, x)}px) scale(${lerp(0.92, 1, e)})`;
+    el.style.opacity = clamp01(v * 2.5);
+    const cols = [...kb.querySelectorAll('.col')], colsBox = kb.querySelector('.cols');
+    const cw = (colsBox.offsetWidth - 14 * 3) / 4;
+    // active column = last step reached; card positions = sum of one spring per step
+    let active = -1;
+    for (const s of o.steps) if (t >= s.t) active = s.col;
+    cols.forEach((c, i) => {
+      const on = i === active;
+      c.style.background = on ? '#DEEBFF' : '#EBECF0';
+      c.style.borderColor = on ? '#4C9AFF' : 'transparent';
+      c.querySelector('.ct').style.color = on ? '#0052CC' : '#5E6C84';
+    });
+    kb.querySelectorAll('.kc').forEach((cd, ci) => {
+      const card = o.cards[ci];
+      let col = card.col;
+      let px = col;
+      for (const s of o.steps) if (s.card === ci) { px += (s.col - col) * spring(t - s.t, ...SOFT); col = s.col; }
+      const lift = o.steps.filter((s) => s.card === ci).reduce((m, s) => Math.max(m, Math.sin(Math.PI * clamp01((t - s.t) / 0.45))), 0);
+      cd.style.left = (px * (cw + 14) + 10) + 'px';
+      cd.style.top = (56 + card.row * 128 - lift * 14) + 'px';
+      cd.style.transform = `rotate(${lift * -3}deg) scale(${1 + lift * 0.06})`;
+      cd.style.zIndex = lift > 0 ? 5 : 2;
+    });
+  }
+  return o.type === 'kanban';
+}
+
+window.seek = (t) => {
+  let altY = null;
+  for (const it of OV) if (drawOverlay(t, it) && t >= it.o.t0 && t <= it.o.t1) altY = CS.y_alt ?? null;
+  drawCaptions(t, altY);
+  // white flash on marked cuts (hook -> intro)
+  let f = 0;
+  for (const it of OV) if (it.o.type === 'flash') { const d = t - it.o.t0; if (d >= -0.07 && d < 0.25) f = Math.max(f, d < 0 ? 1 + d / 0.07 : 1 - d / 0.25); }
+  document.getElementById('flash').style.opacity = f * 0.85;
+};
+window.READY = Promise.all([400, 700, 800, 900].map((w) => document.fonts.load(`${w} 40px Vaz`, 'سلام Jira')));
+</script>
+</body>
+</html>

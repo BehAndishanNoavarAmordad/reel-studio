@@ -1,0 +1,296 @@
+{
+ "name": "example — house style (hook title, story captions, warm grade, chips, kanban)",
+ "source": "videos/example.mp4",
+ "words": "work/example/words.json",
+ "out_dir": "work/example/main",
+ "grade": "warm",
+ "tighten": {
+  "min_gap": 0.18,
+  "keep": 0.08
+ },
+ "caption": {
+  "style": "story",
+  "y": 0.64,
+  "y_alt": 0.47,
+  "max_words": 4,
+  "max_chars": 24,
+  "accent": "#FF8A65",
+  "keywords": {
+   "جیرا": "#7FB2FF"
+  }
+ },
+ "pieces": [
+  {
+   "src": [
+    1.0,
+    7.25
+   ]
+  },
+  {
+   "src": [
+    7.3,
+    13.8
+   ],
+   "zoom": 1.22
+  },
+  {
+   "src": [
+    13.8,
+    19.35
+   ]
+  },
+  {
+   "src": [
+    19.62,
+    24.4
+   ],
+   "zoom": 1.22
+  },
+  {
+   "src": [
+    30.92,
+    34.8
+   ]
+  },
+  {
+   "src": [
+    34.85,
+    39.3
+   ],
+   "zoom": 1.22
+  },
+  {
+   "src": [
+    39.68,
+    45.3
+   ]
+  },
+  {
+   "src": [
+    49.3,
+    50.33
+   ],
+   "zoom": 1.22
+  },
+  {
+   "src": [
+    50.33,
+    54.25
+   ]
+  },
+  {
+   "src": [
+    58.9,
+    60.4
+   ],
+   "zoom": 1.22
+  },
+  {
+   "src": [
+    60.85,
+    65.3
+   ]
+  },
+  {
+   "src": [
+    75.05,
+    81.45
+   ]
+  },
+  {
+   "src": [
+    81.45,
+    89.2
+   ],
+   "zoom": 1.12
+  },
+  {
+   "src": [
+    89.5,
+    95.1
+   ],
+   "zoom": 1.22
+  },
+  {
+   "src": [
+    95.1,
+    99.8
+   ]
+  }
+ ],
+ "overlays": [
+  {
+   "type": "title",
+   "out_t": 0.0,
+   "dur": 3.2,
+   "y": 0.085,
+   "accent": "#FF8A65",
+   "lines": [
+    {
+     "text": "چرا با وجود Codex و Claude"
+    },
+    {
+     "text": "تمرکزم بهم می‌ریخت؟",
+     "hl": true
+    }
+   ]
+  },
+  {
+   "type": "logo",
+   "t": 12.25,
+   "until": 14.6,
+   "svg": "openai.svg",
+   "color": "#111",
+   "label": "Codex",
+   "x": 0.29,
+   "y": 0.135,
+   "sfx": "pop",
+   "sfx_gain": 0.4
+  },
+  {
+   "type": "logo",
+   "t": 12.8,
+   "until": 14.6,
+   "svg": "claude.svg",
+   "color": "#D97757",
+   "label": "Claude",
+   "x": 0.71,
+   "y": 0.135,
+   "sfx": "pop",
+   "sfx_gain": 0.4
+  },
+  {
+   "type": "chip",
+   "t": 17.3,
+   "until": 19.3,
+   "icon": "wallet",
+   "color": "#111",
+   "label": "کیف پول کاربران",
+   "x": 0.5,
+   "y": 0.135,
+   "sfx": "pop",
+   "sfx_gain": 0.4
+  },
+  {
+   "type": "chip",
+   "t": 21.9,
+   "until": 24.3,
+   "icon": "button",
+   "color": "#111",
+   "label": "فیکس دکمه سایت",
+   "x": 0.5,
+   "y": 0.135,
+   "sfx": "pop",
+   "sfx_gain": 0.4
+  },
+  {
+   "type": "chip",
+   "t": 43.35,
+   "until": 50.3,
+   "x_t": 49.55,
+   "icon": "calendar",
+   "color": "#111",
+   "label": "سررسید",
+   "x": 0.5,
+   "y": 0.135,
+   "sfx": "pop",
+   "sfx_gain": 0.4
+  },
+  {
+   "type": "chip",
+   "t": 50.45,
+   "until": 60.35,
+   "x_t": 59.65,
+   "icon": "notebook",
+   "color": "#111",
+   "label": "دفترچه یادداشت",
+   "x": 0.5,
+   "y": 0.135,
+   "sfx": "pop",
+   "sfx_gain": 0.4
+  },
+  {
+   "type": "logo",
+   "t": 64.6,
+   "until": 66.0,
+   "check_t": 64.95,
+   "svg": "jira.svg",
+   "color": "#2684FF",
+   "label": "Jira",
+   "x": 0.5,
+   "y": 0.135,
+   "sfx": "pop",
+   "sfx_gain": 0.4
+  },
+  {
+   "type": "kanban",
+   "t": 75.1,
+   "until": 89.15,
+   "y": 0.555,
+   "svg": "jira.svg",
+   "color": "#2684FF",
+   "board": "Jira",
+   "board_sub": "پروژه بریم",
+   "columns": [
+    "TO DO",
+    "IN PROGRESS",
+    "CODE REVIEW",
+    "QA"
+   ],
+   "sfx": "whoosh",
+   "sfx_gain": 0.35,
+   "cards": [
+    {
+     "text": "کیف پول کاربران",
+     "col": 0,
+     "row": 0,
+     "tag": "مهم",
+     "tag_color": "#E5484D"
+    },
+    {
+     "text": "درست کردن دکمه سایت",
+     "col": 0,
+     "row": 1,
+     "tag": "بعداً",
+     "tag_color": "#5E6C84"
+    }
+   ],
+   "steps": [
+    {
+     "t": 78.2,
+     "col": 0,
+     "card": 0
+    },
+    {
+     "t": 80.4,
+     "col": 1,
+     "card": 0
+    },
+    {
+     "t": 83.0,
+     "col": 2,
+     "card": 0
+    },
+    {
+     "t": 86.95,
+     "col": 3,
+     "card": 0
+    }
+   ]
+  },
+  {
+   "type": "chip",
+   "t": 93.95,
+   "until": 97.6,
+   "icon": "server",
+   "color": "#FF8A65",
+   "dark": true,
+   "label": "Self-Hosted",
+   "sub": "روی سرور خودت",
+   "x": 0.5,
+   "y": 0.135,
+   "sfx": "pop",
+   "sfx_gain": 0.4
+  }
+ ]
+}
